@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade With Sritam | Stock Market & Options Trading Academy</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter, Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QRCode.js for Dynamic QR Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        navy: {
+                            950: '#04070F',
+                            900: '#090E1A',
+                            850: '#0D1424',
+                            800: '#121B2E',
+                            700: '#1E293B',
+                        },
+                        emerald: {
+                            450: '#10B981',
+                            550: '#059669',
+                        },
+                        gold: {
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #04070F;
+            color: #F8FAFC;
+            overflow-x: hidden;
+        }
+        .trading-grid {
+            background-size: 48px 48px;
+            background-image: 
+                linear-gradient(to right, rgba(16, 185, 129, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 185, 129, 0.035) 1px, transparent 1px);
+        }
+        .hero-radial {
+            background: radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.09), transparent 45%),
+                        radial-gradient(circle at 80% 30%, rgba(245, 158, 11, 0.07), transparent 45%);
+        }
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: #090E1A; }
+        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10B981; }
+
+        .glass-card {
+            background: linear-gradient(180deg, rgba(18, 27, 46, 0.78) 0%, rgba(9, 14, 26, 0.88) 100%);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.45);
+        }
+        .pro-card-featured {
+            background: linear-gradient(180deg, rgba(24, 34, 56, 0.9) 0%, rgba(9, 14, 26, 0.96) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            box-shadow: 0 20px 45px -12px rgba(245, 158, 11, 0.14);
+        }
+        .gold-glow:hover {
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 18px 40px -10px rgba(245, 158, 11, 0.16);
+        }
+        .emerald-glow:hover {
+            border-color: rgba(16, 185, 129, 0.45);
+            box-shadow: 0 18px 40px -10px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Continuous Floating Marquee Animation for Trading Performance */
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: flex;
+            width: max-content;
+            animation: marqueeScroll 30s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float {
+            animation: floatSlow 4.5s ease-in-out infinite;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500/30 selection:text-emerald-300">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[120] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- Top Live Market Ticker Strip -->
+    <div class="bg-navy-900/95 border-b border-slate-800/80 text-[11px] sm:text-xs py-2 px-4 overflow-hidden">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-6 overflow-x-auto no-scrollbar whitespace-nowrap font-mono">
+                <span class="flex items-center gap-2 font-medium text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    NIFTY 50 <span class="text-emerald-400 font-semibold">24,892.45 (+0.84%)</span>
+                </span>
+                <span class="text-slate-700">|</span>
+                <span class="flex items-center gap-2 font-medium text-slate-300">
+                    BANKNIFTY <span class="text-emerald-400 font-semibold">53,410.10 (+1.12%)</span>
+                </span>
+                <span class="text-slate-700">|</span>
+                <span class="flex items-center gap-2 font-medium text-slate-300">
+                    INDIA VIX <span class="text-rose-400 font-semibold">13.42 (-4.15%)</span>
+                </span>
+                <span class="hidden lg:inline text-slate-700">|</span>
+                <span class="hidden lg:flex items-center gap-1.5 font-sans font-semibold text-amber-400">
+                    <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                    Instant Digital Course Access
+                </span>
+            </div>
+            <!-- Owner Dashboard Pill (Only visible after login) -->
+            <button id="active-owner-pill" onclick="openOwnerDashboard()" class="hidden items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/50 text-amber-300 text-[11px] font-bold hover:bg-amber-500/30 transition shrink-0">
+                <i data-lucide="sliders" class="w-3 h-3"></i>
+                <span>Sritam Editor Studio</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sticky Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-navy-950/85 backdrop-blur-xl border-b border-slate-800/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            <!-- Brand Logo (Double-Click to Open Secret Owner Login) -->
+            <div ondblclick="triggerOwnerAccess()" title="Trade With Sritam" class="flex items-center gap-3 group cursor-pointer select-none">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition">
+                    <i data-lucide="candlestick-chart" class="w-5 h-5 text-navy-950 stroke-[2.5]"></i>
+                </div>
+                <div>
+                    <span class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white block leading-none">
+                        Trade With <span class="text-emerald-400">Sritam</span>
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-mono tracking-widest uppercase mt-0.5 block">Price Action & Options</span>
+                </div>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#home" class="hover:text-white transition">Home</a>
+                <a href="#performance" class="hover:text-emerald-400 transition">Verified P&L</a>
+                <a href="#free-courses" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+                    Free Courses
+                    <span class="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded">FREE</span>
+                </a>
+                <a href="#paid-courses" class="hover:text-amber-400 transition flex items-center gap-1.5">
+                    Pro Mentorship
+                    <span class="px-1.5 py-0.5 text-[10px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 rounded">PRO</span>
+                </a>
+                <a href="#support" class="hover:text-white transition">Support</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2.5">
+                <button onclick="openMyCoursesDrawer()" class="relative inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700/80 text-sm font-semibold text-white transition shadow-sm">
+                    <i data-lucide="book-open-check" class="w-4 h-4 text-emerald-400"></i>
+                    <span class="hidden sm:inline">My Courses</span>
+                    <span id="enrolled-count-badge" class="px-1.5 py-0.2 text-xs font-mono font-bold rounded-md bg-emerald-500 text-navy-950">0</span>
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-navy-800 text-slate-200 hover:text-white border border-slate-700">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Nav -->
+        <div id="mobile-menu" class="hidden md:hidden bg-navy-900 border-b border-slate-800 px-4 py-4 space-y-3">
+            <a href="#home" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-emerald-400 font-medium">Home</a>
+            <a href="#performance" onclick="toggleMobileMenu()" class="block py-2 text-emerald-400 font-medium">Verified P&L Performance</a>
+            <a href="#free-courses" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-emerald-400 font-medium">Free Foundation Courses</a>
+            <a href="#paid-courses" onclick="toggleMobileMenu()" class="block py-2 text-amber-400 font-semibold">Paid Pro Mentorship</a>
+            <a href="#support" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-emerald-400 font-medium">Contact & Support</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative trading-grid hero-radial pt-14 pb-20 lg:pt-20 lg:pb-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+                <!-- Left Hero Content -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs sm:text-sm font-semibold">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span id="hero-badge-display">India's Practical Price Action & Options Academy</span>
+                    </div>
+
+                    <h1 id="hero-headline-display" class="font-display text-4xl sm:text-5xl lg:text-[56px] font-extrabold tracking-tight text-white leading-[1.1]">
+                        Master the Market with <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Pure Price Action</span> & <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500">Smart Risk Management</span>
+                    </h1>
+
+                    <p id="hero-bio-display" class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Namaste! Main hoon <strong class="text-white">Sritam</strong>. Bina kisi fake indicator ya tip-provider ke, Nifty, BankNifty aur Stocks mein institutional price action aur options trading seekhein—step-by-step Hinglish mein.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#free-courses" class="w-full sm:w-auto px-7 py-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-base shadow-lg shadow-emerald-500/25 transition flex items-center justify-center gap-2">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i>
+                            <span>Start Free Courses</span>
+                        </a>
+                        <a href="#paid-courses" class="w-full sm:w-auto px-7 py-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-navy-950 font-bold text-base shadow-lg shadow-amber-500/20 transition flex items-center justify-center gap-2">
+                            <i data-lucide="crown" class="w-5 h-5"></i>
+                            <span>Explore Pro Mentorship</span>
+                        </a>
+                    </div>
+
+                    <!-- Trust Metrics (Fully Editable from Owner Studio) -->
+                    <div class="grid grid-cols-3 gap-3 sm:gap-5 pt-7 max-w-xl mx-auto lg:mx-0">
+                        <div class="bg-navy-900/80 border border-slate-800/90 rounded-2xl p-3.5 sm:p-4">
+                            <div id="stat-1-val-display" class="text-xl sm:text-3xl font-display font-extrabold text-white tracking-tight">12,500+</div>
+                            <div id="stat-1-label-display" class="text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5">Active Learners</div>
+                        </div>
+                        <div class="bg-navy-900/80 border border-slate-800/90 rounded-2xl p-3.5 sm:p-4">
+                            <div id="stat-2-val-display" class="text-xl sm:text-3xl font-display font-extrabold text-emerald-400 tracking-tight">4.9/5 ★</div>
+                            <div id="stat-2-label-display" class="text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5">Student Rating</div>
+                        </div>
+                        <div class="bg-navy-900/80 border border-slate-800/90 rounded-2xl p-3.5 sm:p-4">
+                            <div id="stat-3-val-display" class="text-xl sm:text-3xl font-display font-extrabold text-amber-400 tracking-tight">100%</div>
+                            <div id="stat-3-label-display" class="text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5">Practical Charts</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero Trading Terminal Preview Card (Editable from Owner Studio) -->
+                <div class="lg:col-span-5">
+                    <div class="glass-card rounded-2xl p-6 shadow-2xl border border-slate-700/70 relative animate-float">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                <span id="chart-card-ticker-display" class="ml-2 text-[11px] font-mono text-slate-400">BANKNIFTY • 15M • PRICE ACTION</span>
+                            </div>
+                            <span id="chart-card-badge-display" class="px-2.5 py-1 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">+1:3.5 R:R</span>
+                        </div>
+
+                        <div class="my-5 bg-navy-950 rounded-xl p-4 border border-slate-800/90 relative overflow-hidden">
+                            <svg viewBox="0 0 360 170" class="w-full h-44 overflow-visible">
+                                <rect x="0" y="25" width="360" height="16" fill="rgba(244, 63, 94, 0.12)" />
+                                <line x1="0" y1="33" x2="360" y2="33" stroke="#F43F5E" stroke-dasharray="4 4" stroke-width="1"/>
+                                <text x="8" y="21" fill="#FDA4AF" font-size="9" font-family="monospace">SUPPLY / RESISTANCE ZONE</text>
+
+                                <rect x="0" y="130" width="360" height="18" fill="rgba(16, 185, 129, 0.14)" />
+                                <line x1="0" y1="139" x2="360" y2="139" stroke="#10B981" stroke-dasharray="4 4" stroke-width="1"/>
+                                <text x="8" y="159" fill="#6EE7B7" font-size="9" font-family="monospace">DEMAND / SUPPORT ZONE (ENTRY)</text>
+
+                                <line x1="30" y1="40" x2="30" y2="75" stroke="#F43F5E" stroke-width="1.5"/><rect x="25" y="45" width="10" height="22" fill="#F43F5E" rx="1"/>
+                                <line x1="55" y1="60" x2="55" y2="95" stroke="#F43F5E" stroke-width="1.5"/><rect x="50" y="65" width="10" height="24" fill="#F43F5E" rx="1"/>
+                                <line x1="80" y1="82" x2="80" y2="115" stroke="#F43F5E" stroke-width="1.5"/><rect x="75" y="88" width="10" height="20" fill="#F43F5E" rx="1"/>
+                                <line x1="105" y1="100" x2="105" y2="136" stroke="#F43F5E" stroke-width="1.5"/><rect x="100" y="106" width="10" height="22" fill="#F43F5E" rx="1"/>
+                                <line x1="135" y1="118" x2="135" y2="146" stroke="#10B981" stroke-width="2"/><rect x="130" y="120" width="10" height="9" fill="#10B981" rx="1"/>
+                                <circle cx="135" cy="139" r="14" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="3 2"/>
+                                <line x1="165" y1="95" x2="165" y2="126" stroke="#10B981" stroke-width="1.5"/><rect x="160" y="100" width="10" height="20" fill="#10B981" rx="1"/>
+                                <line x1="195" y1="78" x2="195" y2="108" stroke="#10B981" stroke-width="1.5"/><rect x="190" y="82" width="10" height="20" fill="#10B981" rx="1"/>
+                                <line x1="225" y1="84" x2="225" y2="102" stroke="#F43F5E" stroke-width="1.5"/><rect x="220" y="86" width="10" height="10" fill="#F43F5E" rx="1"/>
+                                <line x1="255" y1="60" x2="255" y2="94" stroke="#10B981" stroke-width="1.5"/><rect x="250" y="64" width="10" height="24" fill="#10B981" rx="1"/>
+                                <line x1="285" y1="42" x2="285" y2="72" stroke="#10B981" stroke-width="1.5"/><rect x="280" y="46" width="10" height="20" fill="#10B981" rx="1"/>
+                                <line x1="315" y1="28" x2="315" y2="54" stroke="#10B981" stroke-width="1.5"/><rect x="310" y="33" width="10" height="16" fill="#10B981" rx="1"/>
+                            </svg>
+                        </div>
+
+                        <div class="space-y-3 pt-1">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-400">Mentor</span>
+                                <span id="chart-card-mentor-display" class="font-semibold text-white">Sritam (Full-Time Options Trader)</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-400">Language</span>
+                                <span id="chart-card-lang-display" class="font-semibold text-emerald-400">Hinglish (Hindi + English)</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-400">Course Access</span>
+                                <span id="chart-card-access-display" class="font-semibold text-amber-400">Instant Digital Unlock</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- FLOATING TRADING PERFORMANCE & PROFIT SCREENSHOTS SECTION -->
+    <!-- ========================================================= -->
+    <section id="performance" class="py-16 bg-navy-900/90 border-t border-b border-slate-800/80 overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-9">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider mb-2.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        Verified P&L Showcase
+                    </span>
+                    <h2 class="font-display text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                        Live <span class="text-emerald-400">Trading Performance</span> & Profit Proof
+                    </h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-400 flex items-center gap-1.5">
+                    <i data-lucide="mouse-pointer-click" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Hover to pause • Click any screenshot to inspect</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Continuous Floating Marquee Track -->
+        <div class="relative w-full overflow-hidden">
+            <div class="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-navy-900 to-transparent z-10"></div>
+            <div class="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-navy-900 to-transparent z-10"></div>
+
+            <div id="performance-marquee-track" class="animate-marquee gap-6 px-4"></div>
+        </div>
+    </section>
+
+    <!-- FREE COURSES SECTION -->
+    <section id="free-courses" class="py-20 bg-navy-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+                        <i data-lucide="gift" class="w-3.5 h-3.5"></i> 100% Free Foundation Series
+                    </span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                        Start Your Trading Journey <span class="text-emerald-400">Free</span>
+                    </h2>
+                    <p class="text-slate-400 mt-2 max-w-2xl">
+                        Beginner se lekar intermediate concepts tak—bina ek rupaya kharch kiye abhi seekhna shuru karein.
+                    </p>
+                </div>
+                <div class="text-xs sm:text-sm text-emerald-400 font-semibold flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-xl">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span>No Signup Required • Instant Access</span>
+                </div>
+            </div>
+
+            <div id="free-courses-grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+    </section>
+
+    <!-- PAID PRO MENTORSHIP SECTION -->
+    <section id="paid-courses" class="py-20 relative trading-grid bg-navy-900/50 border-t border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+                    <i data-lucide="crown" class="w-3.5 h-3.5"></i> Pro Mentorship Programs
+                </span>
+                <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Master Institutional <span class="text-amber-400">Trading Strategies</span>
+                </h2>
+                <p class="text-slate-400 mt-3 text-base sm:text-lg">
+                    Scan & Pay karke apna UTR / Reference number enter karein aur turant Pro Course videos aur PDFs unlock karein!
+                </p>
+            </div>
+
+            <div id="paid-courses-grid" class="grid md:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- HOW INSTANT UNLOCK WORKS -->
+    <section class="py-16 bg-navy-950 border-t border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h3 class="font-display text-2xl sm:text-3xl font-extrabold text-white">Direct Scan & Instant Course Unlock</h3>
+                <p class="text-slate-400 text-sm sm:text-base mt-2">3 aasaan steps mein apna Pro Course turant access karein</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono font-extrabold text-lg flex items-center justify-center mb-4">01</div>
+                    <h4 class="font-bold text-white text-lg mb-2">Choose Course & Scan QR</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Apna pasandida Pro course select karein aur kisi bhi UPI app se QR scan karke payment complete karein.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono font-extrabold text-lg flex items-center justify-center mb-4">02</div>
+                    <h4 class="font-bold text-white text-lg mb-2">Enter 12-Digit Ref / UTR ID</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Payment successful hone ke baad receipt mein dikhne wala 12-digit Reference / UTR number enter karein.</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl">
+                    <div class="w-11 h-11 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 font-mono font-extrabold text-lg flex items-center justify-center mb-4">03</div>
+                    <h4 class="font-bold text-white text-lg mb-2">Instant Course Unlock</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">"Verify & Unlock" par click karte hi saare video lessons aur PDF study notes turant unlock ho jayenge.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUPPORT & FOOTER SECTION -->
+    <footer id="support" class="bg-navy-900/90 border-t border-slate-800 pt-16 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-10 pb-12 border-b border-slate-800/80">
+                <div class="md:col-span-7 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+                            <i data-lucide="candlestick-chart" class="w-5 h-5 text-navy-950 stroke-[2.5]"></i>
+                        </div>
+                        <span class="font-display font-extrabold text-xl text-white">
+                            Trade With <span class="text-emerald-400">Sritam</span>
+                        </span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-xl">
+                        Humara mission hai Indian retail traders ko disciplined price action, risk management aur option trading sikha kar self-dependent banana.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a id="footer-whatsapp-link" href="https://wa.me/918280961140" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 text-sm font-semibold transition">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>WhatsApp Support</span>
+                        </a>
+                        <button onclick="copyShareLink()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 border border-slate-700 text-slate-200 text-sm font-semibold transition">
+                            <i data-lucide="share-2" class="w-4 h-4"></i>
+                            <span>Copy Website Link</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="md:col-span-5 space-y-3">
+                    <h4 class="font-bold text-white text-xs font-mono uppercase tracking-wider">Quick Links</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#home" class="hover:text-emerald-400 transition">Home</a></li>
+                        <li><a href="#performance" class="hover:text-emerald-400 transition">Verified P&L Performance</a></li>
+                        <li><a href="#free-courses" class="hover:text-emerald-400 transition">Free Trading Courses</a></li>
+                        <li><a href="#paid-courses" class="hover:text-amber-400 transition">Pro Mentorship</a></li>
+                        <li><button onclick="openMyCoursesDrawer()" class="hover:text-emerald-400 transition">My Enrolled Courses</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <p>© 2026 Trade With Sritam. All Rights Reserved.</p>
+                <p class="text-center sm:text-right max-w-xl">
+                    <strong>Disclaimer:</strong> Trade With Sritam is an educational platform. We are not SEBI registered investment advisors. All courses are strictly for educational purposes.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 1: CHECKOUT & INSTANT UNLOCK MODAL                  -->
+    <!-- ========================================================= -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+        <div class="bg-navy-900 border border-slate-700 rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative my-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <span>Instant Course Enrollment</span>
+            </div>
+            <h3 id="checkout-course-title" class="font-display text-xl sm:text-2xl font-extrabold text-white">Course Title</h3>
+            <div class="flex items-baseline gap-2 mt-1">
+                <span class="text-slate-400 text-sm">Payable Amount:</span>
+                <span id="checkout-course-price" class="text-2xl font-mono font-extrabold text-emerald-400">₹1,999</span>
+                <span class="text-xs text-slate-500">(Lifetime Access)</span>
+            </div>
+
+            <!-- Dynamic QR Code Box -->
+            <div class="mt-5 bg-navy-950 border border-slate-800 rounded-2xl p-5 flex flex-col items-center text-center">
+                <div class="bg-white p-3.5 rounded-xl shadow-md mb-3">
+                    <div id="qr-code-container"></div>
+                </div>
+                <p class="text-xs text-slate-300 font-medium">Scan QR Code with GPay, PhonePe, Paytm, or BHIM</p>
+                <p class="text-xs text-emerald-400 font-semibold mt-0.5">Beneficiary: <span id="checkout-payee-name">Sritam (Trade With Sritam)</span></p>
+
+                <a id="payment-intent-link" href="#" class="mt-3.5 w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold flex items-center justify-center gap-2 transition sm:hidden">
+                    <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Open Payment App Directly</span>
+                </a>
+            </div>
+
+            <!-- UTR Verification Form -->
+            <form id="utr-verify-form" onsubmit="handleVerifyPayment(event)" class="mt-5 space-y-4">
+                <div>
+                    <label for="utr-input" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                        Enter 12-Digit Transaction Ref / UTR Number *
+                    </label>
+                    <input 
+                        type="text" 
+                        id="utr-input" 
+                        required
+                        minlength="6"
+                        maxlength="24"
+                        placeholder="e.g., 431982746105" 
+                        class="w-full px-4 py-3 rounded-xl bg-navy-950 border border-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-white font-mono text-sm outline-none transition"
+                    >
+                    <p class="text-[11px] text-slate-400 mt-1">Payment complete karne ke baad receipt se Ref / UTR No. daalein aur turant course unlock karein.</p>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-navy-950 font-extrabold text-sm sm:text-base shadow-lg shadow-emerald-500/25 transition flex items-center justify-center gap-2">
+                    <i data-lucide="unlock" class="w-5 h-5"></i>
+                    <span>Verify & Unlock Course Instantly</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 2: INTERACTIVE COURSE PLAYER (VIDEO + PDF SUPPORT)  -->
+    <!-- ========================================================= -->
+    <div id="player-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/85 backdrop-blur-md p-2 sm:p-5 overflow-y-auto">
+        <div class="bg-navy-900 border border-slate-700 rounded-2xl max-w-5xl w-full overflow-hidden shadow-2xl my-auto flex flex-col max-h-[92vh]">
+            <div class="px-5 py-4 bg-navy-950 border-b border-slate-800 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <span id="player-badge" class="px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase shrink-0">FREE</span>
+                    <h3 id="player-course-title" class="font-display font-bold text-base sm:text-lg text-white truncate">Course Title</h3>
+                </div>
+                <button onclick="closePlayerModal()" class="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition shrink-0">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="grid lg:grid-cols-12 overflow-y-auto flex-1">
+                <!-- Left: Video Player / Lesson Screen & PDF / Notes -->
+                <div class="lg:col-span-8 p-5 sm:p-6 space-y-5 border-b lg:border-b-0 lg:border-r border-slate-800 overflow-y-auto">
+                    <div id="player-media-container" class="aspect-video bg-navy-950 rounded-xl border border-slate-800 overflow-hidden relative flex flex-col justify-between"></div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-navy-950/60 border border-slate-800 rounded-xl px-4 py-3">
+                        <div class="text-xs text-slate-400">
+                            Instructor: <strong class="text-white">Sritam</strong> • <span id="player-lesson-duration" class="text-emerald-400 font-mono">18 Mins</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <a id="player-pdf-btn" href="#" download="Study_Material.pdf" class="hidden items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition">
+                                <i data-lucide="file-down" class="w-3.5 h-3.5"></i>
+                                <span id="player-pdf-label">Download PDF</span>
+                            </a>
+                            <button onclick="markCurrentLessonComplete()" id="complete-lesson-btn" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-navy-950 text-xs font-bold hover:bg-emerald-400 transition flex items-center gap-1.5">
+                                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                <span>Mark Completed</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-navy-950/70 border border-slate-800 rounded-xl p-5 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h5 class="font-bold text-amber-400 text-xs font-mono uppercase tracking-wider flex items-center gap-2">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>Sritam's Key Trading Notes & Rules</span>
+                            </h5>
+                            <button onclick="downloadLessonNotes()" class="text-xs text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                                <span>Save Notes (.txt)</span>
+                            </button>
+                        </div>
+                        <div id="player-lesson-notes" class="text-sm text-slate-300 space-y-2 leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- Right: Lesson Playlist & Progress Checklist -->
+                <div class="lg:col-span-4 bg-navy-950/50 p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-bold text-white text-xs font-mono uppercase tracking-wider">Course Modules</h4>
+                            <span id="player-progress-text" class="text-xs font-mono font-bold text-emerald-400">0% Done</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-4">
+                            <div id="player-progress-bar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                        <div id="player-lessons-list" class="space-y-2.5"></div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-slate-400">
+                        <p class="flex items-center gap-1.5 text-emerald-400 font-semibold mb-1">
+                            <i data-lucide="help-circle" class="w-4 h-4"></i> Doubt Support
+                        </p>
+                        <p>Kisi bhi chart setup mein doubt ho toh WhatsApp par screenshot bhejein.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- DRAWER: MY ENROLLED COURSES                               -->
+    <!-- ========================================================= -->
+    <div id="my-courses-drawer" class="fixed inset-0 z-50 hidden justify-end bg-black/75 backdrop-blur-xs">
+        <div class="bg-navy-900 border-l border-slate-800 w-full max-w-md h-full p-6 flex flex-col justify-between overflow-y-auto shadow-2xl">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="book-open-check" class="w-5 h-5 text-emerald-400"></i>
+                        <h3 class="font-display font-bold text-lg text-white">My Enrolled Courses</h3>
+                    </div>
+                    <button onclick="closeMyCoursesDrawer()" class="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div id="enrolled-courses-list" class="mt-5 space-y-4"></div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-800 text-xs text-slate-400">
+                Aapke unlocked paid courses is browser mein safe hain.
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 3: SECRET OWNER LOGIN MODAL (SRITAM ACCESS)         -->
+    <!-- ========================================================= -->
+    <div id="owner-login-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/85 backdrop-blur-md p-4">
+        <div class="bg-navy-900 border border-amber-500/40 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+            <button onclick="closeOwnerLoginModal()" class="absolute top-4 right-4 p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <div class="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-4">
+                <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-display text-xl font-extrabold text-white">Sritam Owner Access</h3>
+            <p class="text-xs text-slate-400 mt-1">Front page stats, Courses, PDFs, Videos aur Profit Screenshots manage karne ke liye login karein.</p>
+
+            <form onsubmit="handleOwnerLogin(event)" class="mt-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">User ID</label>
+                    <input type="text" id="owner-userid-input" required placeholder="Enter User ID" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-950 border border-slate-700 focus:border-amber-400 text-white text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <input type="password" id="owner-password-input" required placeholder="••••••••••••" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-950 border border-slate-700 focus:border-amber-400 text-white text-sm outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 font-extrabold text-sm transition">
+                    Login to Editor Studio
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 4: FULL OWNER CMS DASHBOARD (EDIT EVERYTHING)       -->
+    <!-- ========================================================= -->
+    <div id="owner-dashboard-modal" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/90 backdrop-blur-md p-2 sm:p-5 overflow-y-auto">
+        <div class="bg-navy-900 border border-slate-700 rounded-2xl max-w-5xl w-full overflow-hidden shadow-2xl my-auto flex flex-col max-h-[92vh]">
+            <!-- Dashboard Header -->
+            <div class="px-6 py-4 bg-navy-950 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                        <i data-lucide="sliders" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-extrabold text-lg text-white">Trade With Sritam — Owner Studio</h3>
+                        <p class="text-[11px] font-mono text-emerald-400">Logged in as: tradewithsritam@2003</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="logoutOwner()" class="px-3 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-xs font-bold transition">
+                        Logout
+                    </button>
+                    <button onclick="closeOwnerDashboard()" class="p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-800 bg-navy-950/60 px-6 gap-5 overflow-x-auto text-xs sm:text-sm font-bold">
+                <button onclick="switchOwnerTab('frontpage')" id="tab-btn-frontpage" class="py-3.5 border-b-2 border-amber-400 text-amber-400 whitespace-nowrap">1. Front Page & Stats</button>
+                <button onclick="switchOwnerTab('courses')" id="tab-btn-courses" class="py-3.5 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">2. Manage Courses</button>
+                <button onclick="switchOwnerTab('lessons')" id="tab-btn-lessons" class="py-3.5 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">3. Upload Video & PDF</button>
+                <button onclick="switchOwnerTab('performance')" id="tab-btn-performance" class="py-3.5 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">4. Profit Screenshots</button>
+                <button onclick="switchOwnerTab('settings')" id="tab-btn-settings" class="py-3.5 border-b-2 border-transparent text-slate-400 hover:text-white whitespace-nowrap">5. Payment & Support</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-6">
+
+                <!-- TAB 1: EDIT FRONT PAGE STATS, HERO TEXT & CHART CARD -->
+                <div id="owner-tab-frontpage" class="space-y-6">
+                    <form onsubmit="saveHeroContent(event)" class="space-y-6">
+                        <!-- Editable Trust Metrics (Active Learners, Student Rating, Practical Charts) -->
+                        <div class="bg-navy-950 border border-slate-800 rounded-xl p-5 space-y-4">
+                            <h4 class="font-bold text-amber-400 text-sm uppercase tracking-wider flex items-center gap-2">
+                                <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+                                <span>Front Page Metrics (Active Learners, Rating & Charts)</span>
+                            </h4>
+                            <div class="grid sm:grid-cols-3 gap-4">
+                                <div class="p-3.5 rounded-xl bg-navy-900 border border-slate-800 space-y-2.5">
+                                    <span class="text-[11px] font-mono font-bold text-emerald-400">METRIC CARD 1</span>
+                                    <div>
+                                        <label class="block text-[11px] text-slate-400 mb-1">Number / Value</label>
+                                        <input type="text" id="edit-stat1-val" required class="w-full px-3 py-2 rounded-lg bg-navy-950 border border-slate-700 text-white font-bold text-sm outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] text-slate-400 mb-1">Label</label>
+                                        <input type="text" id="edit-stat1-label" required class="w-full px-3 py-2 rounded-lg bg-navy-950 border border-slate-700 text-slate-300 text-xs outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl bg-navy-900 border border-slate-800 space-y-2.5">
+                                    <span class="text-[11px] font-mono font-bold text-emerald-400">METRIC CARD 2</span>
+                                    <div>
+                                        <label class="block text-[11px] text-slate-400 mb-1">Number / Rating</label>
+                                        <input type="text" id="edit-stat2-val" required class="w-full px-3 py-2 rounded-lg bg-navy-950 border border-slate-700 text-emerald-400 font-bold text-sm outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] text-slate-400 mb-1">Label</label>
+                                        <input type="text" id="edit-stat2-label" required class="w-full px-3 py-2 rounded-lg bg-navy-950 border border-slate-700 text-slate-300 text-xs outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl bg-navy-900 border border-slate-800 space-y-2.5">
+                                    <span class="text-[11px] font-mono font-bold text-emerald-400">METRIC CARD 3</span>
+                                    <div>
+                                        <label class="block text-[11px] text-slate-400 mb-1">Number / Value</label>
+                                        <input type="text" id="edit-stat3-val" required class="w-full px-3 py-2 rounded-lg bg-navy-950 border border-slate-700 text-amber-400 font-bold text-sm outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] text-slate-400 mb-1">Label</label>
+                                        <input type="text" id="edit-stat3-label" required class="w-full px-3 py-2 rounded-lg bg-navy-950 border border-slate-700 text-slate-300 text-xs outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editable Hero Intro & Right Terminal Card -->
+                        <div class="bg-navy-950 border border-slate-800 rounded-xl p-5 space-y-4">
+                            <h4 class="font-bold text-emerald-400 text-sm uppercase tracking-wider flex items-center gap-2">
+                                <i data-lucide="layout-template" class="w-4 h-4"></i>
+                                <span>Hero Section & Chart Terminal Card Details</span>
+                            </h4>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-slate-400 mb-1">Top Academy Tagline Badge</label>
+                                    <input type="text" id="edit-hero-badge" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-400 mb-1">Chart Header Ticker (e.g. BANKNIFTY • 15M)</label>
+                                    <input type="text" id="edit-chart-ticker" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white font-mono text-sm outline-none">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs text-slate-400 mb-1">Intro Bio Paragraph</label>
+                                    <textarea id="edit-hero-bio" rows="2" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-400 mb-1">Chart R:R Badge</label>
+                                    <input type="text" id="edit-chart-badge" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-emerald-400 font-mono text-sm outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-400 mb-1">Mentor Title</label>
+                                    <input type="text" id="edit-chart-mentor" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-400 mb-1">Teaching Language</label>
+                                    <input type="text" id="edit-chart-lang" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-400 mb-1">Course Access Label</label>
+                                    <input type="text" id="edit-chart-access" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-4">
+                            <button type="button" onclick="resetHeroDefaults()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+                                Reset to Default
+                            </button>
+                            <button type="submit" class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-navy-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition">
+                                Save Front Page Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- TAB 2: MANAGE COURSES (ADD / EDIT / DELETE) -->
+                <div id="owner-tab-courses" class="hidden space-y-6">
+                    <div class="bg-navy-950 border border-slate-800 rounded-xl p-5">
+                        <h4 class="font-bold text-white text-base mb-4">Add New Free or Paid Course</h4>
+                        <form onsubmit="handleAddCourse(event)" class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Course Type</label>
+                                <select id="new-course-type" onchange="togglePriceFields()" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                                    <option value="free">Free Course</option>
+                                    <option value="paid">Paid Pro Course</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Course Title *</label>
+                                <input type="text" id="new-course-title" required placeholder="e.g., Intraday Scalping Secret" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div id="new-course-price-wrap" class="hidden">
+                                <label class="block text-xs text-slate-400 mb-1">Selling Price (₹) *</label>
+                                <input type="number" id="new-course-price" placeholder="1999" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div id="new-course-origprice-wrap" class="hidden">
+                                <label class="block text-xs text-slate-400 mb-1">Original MRP (₹)</label>
+                                <input type="number" id="new-course-origprice" placeholder="4999" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-slate-400 mb-1">Short Description *</label>
+                                <input type="text" id="new-course-subtitle" required placeholder="Course mein kya sikhaya jayega..." class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-sm transition">
+                                    + Create Course
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-white text-base mb-3">Existing Courses (Edit Price/Title or Delete)</h4>
+                        <div id="owner-courses-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: UPLOAD VIDEO & PDF LESSONS TO ANY COURSE -->
+                <div id="owner-tab-lessons" class="hidden space-y-6">
+                    <div class="bg-navy-950 border border-slate-800 rounded-xl p-5">
+                        <h4 class="font-bold text-white text-base mb-1">Upload Video & PDF Lesson to Course</h4>
+                        <p class="text-xs text-slate-400 mb-4">Apne device se Video (.mp4) ya YouTube link aur PDF study notes upload karein.</p>
+
+                        <form onsubmit="handleAddLesson(event)" class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Select Target Course *</label>
+                                <select id="lesson-target-course" onchange="renderOwnerCourseLessons()" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Lesson / Module Title *</label>
+                                <input type="text" id="lesson-title-input" required placeholder="e.g., Module 4: Live Trade Execution" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Duration</label>
+                                <input type="text" id="lesson-duration-input" value="25 Mins" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">YouTube / Video URL (Optional)</label>
+                                <input type="url" id="lesson-video-url" placeholder="https://www.youtube.com/watch?v=..." class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-amber-400 font-semibold mb-1">Upload Video File from Device (.mp4/.webm)</label>
+                                <input type="file" id="lesson-video-file" accept="video/*" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-amber-400 font-semibold mb-1">Upload PDF Study Material (.pdf)</label>
+                                <input type="file" id="lesson-pdf-file" accept=".pdf" class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-slate-800 file:text-amber-400 hover:file:bg-slate-700">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-slate-400 mb-1">Lesson Summary & Key Notes *</label>
+                                <textarea id="lesson-notes-input" rows="3" required placeholder="Key points aur rules likhein..." class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none"></textarea>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <button type="submit" id="upload-lesson-submit-btn" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-950 font-extrabold text-sm transition">
+                                    Upload & Save Lesson
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-white text-sm mb-2">Lessons in Selected Course:</h4>
+                        <div id="owner-selected-course-lessons" class="space-y-2"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: PROFIT SCREENSHOTS (FLOATING ANIMATION CAROUSEL) -->
+                <div id="owner-tab-performance" class="hidden space-y-6">
+                    <div class="bg-navy-950 border border-slate-800 rounded-xl p-5">
+                        <h4 class="font-bold text-white text-base mb-1">Upload Trading Profit Screenshot</h4>
+                        <p class="text-xs text-slate-400 mb-4">Yeh screenshot website ke front floating "Trading Performance" slider mein turant chalne lagega.</p>
+
+                        <form onsubmit="handleAddProfitScreenshot(event)" class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Index / Stock Name *</label>
+                                <input type="text" id="perf-index-input" required placeholder="e.g., BANKNIFTY 53400 CE" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Profit Amount *</label>
+                                <input type="text" id="perf-profit-input" required placeholder="e.g., +₹42,850" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-emerald-400 font-bold text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Date / Setup Tag</label>
+                                <input type="text" id="perf-tag-input" placeholder="e.g., Expiry Jackpot • 1:4 R:R" class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <label class="block text-xs text-amber-400 font-semibold mb-1">Upload P&L Screenshot Image (JPG / PNG) *</label>
+                                <input type="file" id="perf-image-file" accept="image/*" required class="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:text-emerald-400 hover:file:bg-emerald-500/30">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-extrabold text-sm transition">
+                                    + Add to Floating Performance Slider
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-white text-sm mb-3">Active Screenshots in Floating Slider:</h4>
+                        <div id="owner-perf-list" class="grid sm:grid-cols-3 gap-4"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: PAYMENT & WHATSAPP SETTINGS -->
+                <div id="owner-tab-settings" class="hidden space-y-5">
+                    <form onsubmit="saveOwnerSettings(event)" class="bg-navy-950 border border-slate-800 rounded-xl p-5 space-y-4 max-w-lg">
+                        <h4 class="font-bold text-white text-base">Account & Support Settings</h4>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Payment UPI Handle (Used silently for QR generation)</label>
+                            <input type="text" id="setting-upi-input" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white font-mono text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Beneficiary Name</label>
+                            <input type="text" id="setting-name-input" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">WhatsApp Support Number (with 91)</label>
+                            <input type="text" id="setting-whatsapp-input" required class="w-full px-3.5 py-2.5 rounded-xl bg-navy-900 border border-slate-700 text-white font-mono text-sm outline-none">
+                        </div>
+                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-950 font-extrabold text-sm transition">
+                            Save Settings
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 5: FULLSCREEN PROFIT SCREENSHOT LIGHTBOX            -->
+    <!-- ========================================================= -->
+    <div id="lightbox-modal" onclick="closeLightbox()" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/90 backdrop-blur-md p-4">
+        <div class="max-w-3xl w-full bg-navy-900 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+            <div class="px-5 py-3 bg-navy-950 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span id="lightbox-title" class="font-mono font-bold text-white text-sm">BANKNIFTY</span>
+                    <span id="lightbox-profit" class="font-mono font-extrabold text-emerald-400 text-sm">+₹38,400</span>
+                </div>
+                <button onclick="closeLightbox()" class="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div id="lightbox-content" class="p-4 flex items-center justify-center bg-navy-950"></div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- JAVASCRIPT APPLICATION LOGIC                              -->
+    <!-- ========================================================= -->
+    <script>
+        // ---------------------------------------------------------
+        // 1. OWNER CREDENTIALS
+        // ---------------------------------------------------------
+        const OWNER_USER_ID = 'tradewithsritam@2003';
+        const OWNER_PASSWORD = 'sritam@2003';
+        let isOwnerLoggedIn = sessionStorage.getItem('tws_owner_auth') === 'true';
+
+        // ---------------------------------------------------------
+        // 2. INDEXEDDB HELPER FOR LARGE VIDEOS & PDFs
+        // ---------------------------------------------------------
+        const DB_NAME = 'TradeWithSritamDB';
+        const STORE_NAME = 'cms_store';
+
+        function openIDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function idbGet(key) {
+            try {
+                const db = await openIDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const req = tx.objectStore(STORE_NAME).get(key);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function idbSet(key, val) {
+            try {
+                const db = await openIDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const req = tx.objectStore(STORE_NAME).put(val, key);
+                    req.onsuccess = () => resolve();
+                    req.onerror = () => reject(req.error);
+                });
+            } catch (e) {
+                console.error('IDB Save Error:', e);
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 3. DEFAULT DATA (HERO, COURSES & TRADING PERFORMANCE)
+        // ---------------------------------------------------------
+        const DEFAULT_HERO_DATA = {
+            badge: "India's Practical Price Action & Options Academy",
+            bio: "Namaste! Main hoon Sritam. Bina kisi fake indicator ya tip-provider ke, Nifty, BankNifty aur Stocks mein institutional price action aur options trading seekhein—step-by-step Hinglish mein.",
+            stat1Val: "12,500+",
+            stat1Label: "Active Learners",
+            stat2Val: "4.9/5 ★",
+            stat2Label: "Student Rating",
+            stat3Val: "100%",
+            stat3Label: "Practical Charts",
+            chartTicker: "BANKNIFTY • 15M • PRICE ACTION",
+            chartBadge: "+1:3.5 R:R",
+            chartMentor: "Sritam (Full-Time Options Trader)",
+            chartLang: "Hinglish (Hindi + English)",
+            chartAccess: "Instant Digital Unlock"
+        };
+
+        const DEFAULT_COURSES = [
+            {
+                id: 'free-1',
+                type: 'free',
+                title: 'Stock Market Basics (A to Z)',
+                subtitle: 'NSE, BSE, Nifty, Sensex, Demat aur Order types ki poori jaankari.',
+                level: 'Beginner',
+                duration: '4 Lessons • 1h 10m',
+                icon: 'landmark',
+                lessons: [
+                    {
+                        title: '1. Indian Stock Market Kaise Kaam Karta Hai?',
+                        duration: '15 Mins',
+                        summary: 'NSE, BSE, SEBI aur Brokers ka role samjhein simple Hinglish mein.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• NSE (National Stock Exchange) aur BSE (Bombay Stock Exchange) India ke do mukhya stock exchanges hain.',
+                            '• NIFTY 50 top 50 companies ka benchmark index hai, jabki BANKNIFTY top 12 banking stocks ko track karta hai.',
+                            '• Hamesha SEBI-registered discount broker ke saath apna Demat & Trading account open karein.'
+                        ]
+                    },
+                    {
+                        title: '2. Market Order, Limit Order & SL-M Explained',
+                        duration: '18 Mins',
+                        summary: 'Sahi entry aur stop-loss lagane ke liye order types ka sahi use.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• Market Order: Current market price par turant buy/sell karne ke liye.',
+                            '• Limit Order: Apni pasand ke price par order lagane ke liye (best for option buyers to avoid slippage).',
+                            '• Stop-Loss (SL): Har trade mein entry se pehle apna maximum loss fix karein.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'free-2',
+                type: 'free',
+                title: 'Candlestick Patterns Mastery',
+                subtitle: 'Hammer, Engulfing, Doji aur Morning Star ko chart par padhna seekhein.',
+                level: 'Beginner',
+                duration: '3 Lessons • 55m',
+                icon: 'bar-chart-2',
+                lessons: [
+                    {
+                        title: '1. Anatomy of a Candlestick (Buyers vs Sellers)',
+                        duration: '16 Mins',
+                        summary: 'Open, High, Low, Close aur Wick rejection ka asli matlab.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• Lambi neeche ki wick (Lower Shadow) dikhati hai ki buyers ne price ko neeche se reject karke upar dhakela hai.',
+                            '• Candlestick ka color se zyada uski location (Support ya Resistance par banna) zaroori hota hai.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'free-3',
+                type: 'free',
+                title: 'Support, Resistance & Trendlines',
+                subtitle: 'Sahi levels draw karna aur fake breakouts se bachna seekhein.',
+                level: 'Intermediate',
+                duration: '3 Lessons • 1h 05m',
+                icon: 'git-commit',
+                lessons: [
+                    {
+                        title: '1. Institutional Demand & Supply Zones',
+                        duration: '22 Mins',
+                        summary: 'Single line ki jagah zones draw karne ka professional tarika.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• Support aur Resistance ek exact price nahi balki ek ZONE hota hai.',
+                            '• Jis level se market ne pehle tez rally ki ho, woh strong Demand Zone ban jata hai.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'free-4',
+                type: 'free',
+                title: 'Risk Management & Position Sizing',
+                subtitle: 'Apne trading account ko blow hone se bachane ka mathematical formula.',
+                level: 'Essential',
+                duration: '3 Lessons • 50m',
+                icon: 'shield',
+                lessons: [
+                    {
+                        title: '1. The 1% - 2% Risk Rule',
+                        duration: '15 Mins',
+                        summary: 'Har trade mein kitna risk lena chahiye taaki 5 continuous loss bhi account na bigade.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• Agar aapka capital ₹50,000 hai, toh ek trade mein maximum risk ₹500 se ₹1,000 (1%-2%) hona chahiye.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'pro-1',
+                type: 'paid',
+                price: 1999,
+                originalPrice: 4999,
+                badge: 'BESTSELLER',
+                title: 'Price Action Mastery Pro',
+                subtitle: 'Bina kisi indicator ke pure chart reading, liquidity traps aur institutional order blocks seekhein.',
+                features: [
+                    '15+ HD Strategy Modules (Hinglish)',
+                    'Institutional Supply-Demand & Liquidity Sweeps',
+                    'Downloadable PDF Chart Breakdowns',
+                    'Lifetime Access + Private Doubt Support'
+                ],
+                lessons: [
+                    {
+                        title: 'Module 1: Market Structure & BOS / CHoCH',
+                        duration: '32 Mins',
+                        summary: 'Break of Structure aur Change of Character se exact trend reversal pakdein.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• Uptrend mein Higher Highs (HH) aur Higher Lows (HL) bante hain.',
+                            '• Jab market pichle Higher Low ko break karta hai, toh Change of Character (CHoCH) hota hai.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'pro-2',
+                type: 'paid',
+                price: 3499,
+                originalPrice: 7999,
+                badge: 'MOST POPULAR',
+                title: 'Options Buying & Hedging Pro',
+                subtitle: 'Nifty & BankNifty Options mein momentum scalping, OI data decoding aur theta decay se bachna seekhein.',
+                features: [
+                    'Option Greeks (Delta, Theta, Gamma) Practical Use',
+                    'Option Chain & Open Interest (OI) Traps',
+                    'Zero-to-Hero Expiry Day Special Setup',
+                    'Low-Risk Spread & Hedging Strategies'
+                ],
+                lessons: [
+                    {
+                        title: 'Module 1: Strike Price Selection & Delta Secret',
+                        duration: '35 Mins',
+                        summary: 'Option buying mein ITM, ATM aur OTM mein se kaunsa strike fastest move deta hai.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• Option buyers ko hamesha ATM ya slight ITM (Delta 0.55 - 0.65) select karna chahiye.'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'pro-3',
+                type: 'paid',
+                price: 4999,
+                originalPrice: 11999,
+                badge: 'COMPLETE MENTORSHIP',
+                title: 'A-Z Pro Trader Mentorship',
+                subtitle: 'Price Action + Options Buying + Swing Stock Selection + 1-on-1 Portfolio & Psychology Coaching.',
+                features: [
+                    'Includes Price Action + Options Pro Courses',
+                    'Swing Trading Multi-Bagger Stock Screener',
+                    '1-on-1 Personal Trading Plan Review',
+                    'Direct WhatsApp Mentorship with Sritam'
+                ],
+                lessons: [
+                    {
+                        title: 'Module 1: Complete Intraday + Swing Blueprint',
+                        duration: '45 Mins',
+                        summary: 'Apne capital ko Intraday, Options aur Swing mein divide karne ka master plan.',
+                        videoUrl: '',
+                        pdfData: '',
+                        pdfName: '',
+                        notes: [
+                            '• Total trading capital ka 60% Swing/Positional stocks mein rakhein aur 40% Intraday/Options mein use karein.'
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const DEFAULT_PERFORMANCE = [
+            {
+                id: 'perf-1',
+                index: 'BANKNIFTY 53400 CE',
+                profit: '+₹48,250',
+                tag: 'Expiry Momentum • 1:4 R:R',
+                image: ''
+            },
+            {
+                id: 'perf-2',
+                index: 'NIFTY 24850 PE',
+                profit: '+₹31,600',
+                tag: 'Supply Zone Rejection • 15M',
+                image: ''
+            },
+            {
+                id: 'perf-3',
+                index: 'BANKNIFTY 53100 PE',
+                profit: '+₹64,900',
+                tag: 'Liquidity Sweep Setup',
+                image: ''
+            },
+            {
+                id: 'perf-4',
+                index: 'FINNIFTY 23900 CE',
+                profit: '+₹27,450',
+                tag: '9:20 Opening Range Breakout',
+                image: ''
+            }
+        ];
+
+        let heroData = JSON.parse(localStorage.getItem('tws_hero_v3')) || { ...DEFAULT_HERO_DATA };
+        let coursesData = DEFAULT_COURSES;
+        let performanceData = DEFAULT_PERFORMANCE;
+        let appSettings = JSON.parse(localStorage.getItem('tws_settings_v2')) || {
+            upiId: 'sritambaiga395-4@okicici',
+            payeeName: 'Sritam (Trade With Sritam)',
+            whatsapp: '918280961140'
+        };
+
+        let unlockedCourseIds = JSON.parse(localStorage.getItem('tws_unlocked_courses')) || [];
+        let completedLessonsMap = JSON.parse(localStorage.getItem('tws_completed_lessons')) || {};
+
+        let activeCheckoutCourse = null;
+        let activePlayerCourse = null;
+        let activeLessonIndex = 0;
+
+        // ---------------------------------------------------------
+        // 4. INITIALIZE ON LOAD & KEYBOARD SHORTCUT
+        // ---------------------------------------------------------
+        document.addEventListener('DOMContentLoaded', async () => {
+            const storedCourses = await idbGet('tws_courses_v3');
+            if (storedCourses && Array.isArray(storedCourses)) {
+                coursesData = storedCourses;
+            } else {
+                const legacyCourses = JSON.parse(localStorage.getItem('tws_courses_v2'));
+                if (legacyCourses) coursesData = legacyCourses;
+            }
+
+            const storedPerf = await idbGet('tws_performance_v3');
+            if (storedPerf && Array.isArray(storedPerf)) {
+                performanceData = storedPerf;
+            } else {
+                const legacyPerf = JSON.parse(localStorage.getItem('tws_performance_v2'));
+                if (legacyPerf) performanceData = legacyPerf;
+            }
+
+            renderHeroSection();
+            renderPerformanceSlider();
+            renderFreeCourses();
+            renderPaidCourses();
+            updateEnrolledBadge();
+            updateFooterWhatsapp();
+            updateOwnerStatusUI();
+            lucide.createIcons();
+        });
+
+        // Keyboard shortcut: Ctrl + Shift + L to open Owner Login
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+                e.preventDefault();
+                triggerOwnerAccess();
+            }
+        });
+
+        async function saveAllState() {
+            localStorage.setItem('tws_hero_v3', JSON.stringify(heroData));
+            localStorage.setItem('tws_settings_v2', JSON.stringify(appSettings));
+            await idbSet('tws_courses_v3', coursesData);
+            await idbSet('tws_performance_v3', performanceData);
+        }
+
+        // ---------------------------------------------------------
+        // 5. RENDER HERO SECTION & FRONT PAGE STATS
+        // ---------------------------------------------------------
+        function renderHeroSection() {
+            document.getElementById('hero-badge-display').textContent = heroData.badge;
+            document.getElementById('hero-bio-display').textContent = heroData.bio;
+
+            document.getElementById('stat-1-val-display').textContent = heroData.stat1Val;
+            document.getElementById('stat-1-label-display').textContent = heroData.stat1Label;
+
+            document.getElementById('stat-2-val-display').textContent = heroData.stat2Val;
+            document.getElementById('stat-2-label-display').textContent = heroData.stat2Label;
+
+            document.getElementById('stat-3-val-display').textContent = heroData.stat3Val;
+            document.getElementById('stat-3-label-display').textContent = heroData.stat3Label;
+
+            document.getElementById('chart-card-ticker-display').textContent = heroData.chartTicker;
+            document.getElementById('chart-card-badge-display').textContent = heroData.chartBadge;
+            document.getElementById('chart-card-mentor-display').textContent = heroData.chartMentor;
+            document.getElementById('chart-card-lang-display').textContent = heroData.chartLang;
+            document.getElementById('chart-card-access-display').textContent = heroData.chartAccess;
+        }
+
+        // ---------------------------------------------------------
+        // 6. FLOATING TRADING PERFORMANCE SLIDER
+        // ---------------------------------------------------------
+        function renderPerformanceSlider() {
+            const track = document.getElementById('performance-marquee-track');
+            if (!track) return;
+
+            const items = [...performanceData, ...performanceData];
+
+            track.innerHTML = items.map(item => `
+                <div onclick="openPerfLightbox('${item.id}')" class="w-72 sm:w-80 shrink-0 glass-card rounded-2xl p-4 border border-emerald-500/20 hover:border-emerald-400/60 transition cursor-pointer group">
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-xs font-mono font-bold text-slate-200">${item.index}</span>
+                        <span class="px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-extrabold">${item.profit}</span>
+                    </div>
+                    <div class="h-36 rounded-xl bg-navy-950 border border-slate-800/90 overflow-hidden flex items-center justify-center relative">
+                        ${item.image ? `
+                            <img src="${item.image}" alt="${item.index}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        ` : `
+                            <div class="w-full h-full p-3.5 flex flex-col justify-between bg-gradient-to-br from-navy-950 to-navy-900">
+                                <div class="flex justify-between items-center text-[10px] font-mono text-slate-400 border-b border-slate-800 pb-1.5">
+                                    <span>VERIFIED BROKER P&L</span>
+                                    <span class="text-emerald-400 font-bold">EXECUTED</span>
+                                </div>
+                                <div class="my-auto text-center">
+                                    <div class="text-[11px] text-slate-400">Net Realized Profit</div>
+                                    <div class="font-display text-2xl font-extrabold text-emerald-400 tracking-tight">${item.profit}</div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-800/80">
+                                    <span>Trade With Sritam</span>
+                                    <span class="text-amber-400 font-medium">Price Action</span>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                    <div class="mt-2.5 flex items-center justify-between text-[11px] text-slate-400">
+                        <span>${item.tag || 'Verified Trade'}</span>
+                        <span class="text-emerald-400 font-semibold group-hover:underline">Inspect →</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openPerfLightbox(perfId) {
+            const item = performanceData.find(p => p.id === perfId);
+            if (!item) return;
+            document.getElementById('lightbox-title').textContent = item.index;
+            document.getElementById('lightbox-profit').textContent = item.profit;
+            const content = document.getElementById('lightbox-content');
+
+            if (item.image) {
+                content.innerHTML = `<img src="${item.image}" alt="${item.index}" class="max-h-[75vh] rounded-xl object-contain">`;
+            } else {
+                content.innerHTML = `
+                    <div class="p-8 text-center space-y-3">
+                        <div class="text-xs font-mono uppercase tracking-wider text-slate-400">Verified Trading Performance</div>
+                        <div class="text-2xl font-bold text-white">${item.index}</div>
+                        <div class="text-4xl font-display font-extrabold text-emerald-400">${item.profit}</div>
+                        <div class="text-sm text-amber-400">${item.tag}</div>
+                    </div>
+                `;
+            }
+
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // ---------------------------------------------------------
+        // 7. RENDER FREE & PAID COURSES
+        // ---------------------------------------------------------
+        function renderFreeCourses() {
+            const container = document.getElementById('free-courses-grid');
+            const freeCourses = coursesData.filter(c => c.type === 'free');
+
+            container.innerHTML = freeCourses.map(course => `
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between emerald-glow transition duration-300 hover:-translate-y-1">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+                                <i data-lucide="${course.icon || 'book-open'}" class="w-5 h-5"></i>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-md bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 text-[11px] font-mono font-bold">FREE</span>
+                        </div>
+                        <h3 class="font-display font-bold text-lg text-white leading-snug mb-2">${course.title}</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-4">${course.subtitle}</p>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-800/80 space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono text-slate-400">
+                            <span>${course.level || 'All Levels'}</span>
+                            <span>${course.lessons.length} Modules</span>
+                        </div>
+                        <button onclick="openCoursePlayer('${course.id}')" class="w-full py-3 px-4 rounded-xl bg-emerald-500/15 hover:bg-emerald-500 text-emerald-400 hover:text-navy-950 border border-emerald-500/35 font-bold text-sm transition flex items-center justify-center gap-2">
+                            <i data-lucide="play-circle" class="w-4 h-4"></i>
+                            <span>Start Learning Free</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPaidCourses() {
+            const container = document.getElementById('paid-courses-grid');
+            const paidCourses = coursesData.filter(c => c.type === 'paid');
+
+            container.innerHTML = paidCourses.map(course => {
+                const isUnlocked = unlockedCourseIds.includes(course.id);
+                const isFeatured = course.id === 'pro-2';
+                return `
+                    <div class="${isFeatured ? 'pro-card-featured' : 'glass-card'} rounded-2xl p-7 flex flex-col justify-between gold-glow transition duration-300 hover:-translate-y-1 relative">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[11px] font-mono font-extrabold tracking-wider">
+                                    ${course.badge || 'PRO COURSE'}
+                                </span>
+                                ${isUnlocked ? `<span class="px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-400 text-xs font-mono font-bold flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> UNLOCKED</span>` : ''}
+                            </div>
+
+                            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-white mb-2">${course.title}</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-5">${course.subtitle}</p>
+
+                            <div class="flex items-baseline gap-2.5 mb-6 pb-5 border-b border-slate-800">
+                                <span class="font-display text-3xl sm:text-4xl font-extrabold text-white">₹${Number(course.price).toLocaleString('en-IN')}</span>
+                                <span class="text-sm font-mono text-slate-500 line-through">₹${Number(course.originalPrice || course.price * 2).toLocaleString('en-IN')}</span>
+                                <span class="ml-auto text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-md">${course.lessons.length} Modules</span>
+                            </div>
+
+                            <ul class="space-y-2.5 mb-7">
+                                ${(course.features || ['HD Video Lessons', 'PDF Study Notes', 'Lifetime Access']).map(feat => `
+                                    <li class="flex items-start gap-2.5 text-sm text-slate-300">
+                                        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                                        <span>${feat}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+
+                        <div>
+                            ${isUnlocked ? `
+                                <button onclick="openCoursePlayer('${course.id}')" class="w-full py-3.5 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-extrabold text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                                    <i data-lucide="play" class="w-4 h-4 fill-navy-950"></i>
+                                    <span>Access Unlocked Course</span>
+                                </button>
+                            ` : `
+                                <button onclick="openCheckoutModal('${course.id}')" class="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-navy-950 font-extrabold text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
+                                    <i data-lucide="zap" class="w-4 h-4 fill-navy-950"></i>
+                                    <span>Buy Now • Instant Unlock</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ---------------------------------------------------------
+        // 8. CHECKOUT & INSTANT UNLOCK
+        // ---------------------------------------------------------
+        function openCheckoutModal(courseId) {
+            const course = coursesData.find(c => c.id === courseId);
+            if (!course) return;
+
+            activeCheckoutCourse = course;
+            document.getElementById('checkout-course-title').textContent = course.title;
+            document.getElementById('checkout-course-price').textContent = `₹${Number(course.price).toLocaleString('en-IN')}`;
+            document.getElementById('checkout-payee-name').textContent = appSettings.payeeName;
+            document.getElementById('utr-input').value = '';
+
+            const payUri = `upi://pay?pa=${encodeURIComponent(appSettings.upiId)}&pn=${encodeURIComponent(appSettings.payeeName)}&am=${course.price}&cu=INR&tn=${encodeURIComponent(course.title)}`;
+            document.getElementById('payment-intent-link').href = payUri;
+
+            const qrContainer = document.getElementById('qr-code-container');
+            qrContainer.innerHTML = '';
+            try {
+                new QRCode(qrContainer, {
+                    text: payUri,
+                    width: 175,
+                    height: 175,
+                    colorDark: '#04070F',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } catch (err) {
+                qrContainer.innerHTML = `<p class="text-xs text-slate-800 p-4 font-bold">Amount: ₹${course.price}</p>`;
+            }
+
+            const modal = document.getElementById('checkout-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkout-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            activeCheckoutCourse = null;
+        }
+
+        function handleVerifyPayment(e) {
+            e.preventDefault();
+            if (!activeCheckoutCourse) return;
+
+            const utrValue = document.getElementById('utr-input').value.trim();
+            if (utrValue.length < 6) {
+                showToast('Please enter a valid Transaction Ref / UTR number.', 'error');
+                return;
+            }
+
+            if (!unlockedCourseIds.includes(activeCheckoutCourse.id)) {
+                unlockedCourseIds.push(activeCheckoutCourse.id);
+                localStorage.setItem('tws_unlocked_courses', JSON.stringify(unlockedCourseIds));
+            }
+
+            const unlockedCourseRef = activeCheckoutCourse;
+            closeCheckoutModal();
+            renderPaidCourses();
+            updateEnrolledBadge();
+            lucide.createIcons();
+
+            showToast(`Verified! "${unlockedCourseRef.title}" unlocked!`, 'success');
+            setTimeout(() => openCoursePlayer(unlockedCourseRef.id), 500);
+        }
+
+        // ---------------------------------------------------------
+        // 9. COURSE PLAYER (VIDEOS + PDF DOWNLOADS + NOTES)
+        // ---------------------------------------------------------
+        function openCoursePlayer(courseId) {
+            const course = coursesData.find(c => c.id === courseId);
+            if (!course) return;
+
+            if (course.type === 'paid' && !unlockedCourseIds.includes(course.id) && !isOwnerLoggedIn) {
+                openCheckoutModal(course.id);
+                return;
+            }
+
+            activePlayerCourse = course;
+            activeLessonIndex = 0;
+
+            const badge = document.getElementById('player-badge');
+            badge.textContent = course.type === 'free' ? 'FREE COURSE' : 'PRO MENTORSHIP';
+            badge.className = course.type === 'free'
+                ? 'px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase shrink-0 bg-emerald-500/20 text-emerald-400'
+                : 'px-2.5 py-1 rounded-md text-xs font-mono font-bold uppercase shrink-0 bg-amber-500/20 text-amber-400';
+
+            document.getElementById('player-course-title').textContent = course.title;
+            renderPlayerLesson();
+
+            const modal = document.getElementById('player-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function renderPlayerLesson() {
+            if (!activePlayerCourse || activePlayerCourse.lessons.length === 0) return;
+            const lesson = activePlayerCourse.lessons[activeLessonIndex];
+            const completedList = completedLessonsMap[activePlayerCourse.id] || [];
+
+            document.getElementById('player-lesson-duration').textContent = lesson.duration || '20 Mins';
+            document.getElementById('player-lesson-notes').innerHTML = (lesson.notes || []).map(note => `<p>${note}</p>`).join('');
+
+            const pdfBtn = document.getElementById('player-pdf-btn');
+            if (lesson.pdfData) {
+                pdfBtn.href = lesson.pdfData;
+                pdfBtn.download = lesson.pdfName || 'Sritam_Trading_Notes.pdf';
+                document.getElementById('player-pdf-label').textContent = `PDF: ${lesson.pdfName || 'Download'}`;
+                pdfBtn.classList.remove('hidden');
+                pdfBtn.classList.add('inline-flex');
+            } else {
+                pdfBtn.classList.add('hidden');
+                pdfBtn.classList.remove('inline-flex');
+            }
+
+            const mediaBox = document.getElementById('player-media-container');
+            if (lesson.videoFileData) {
+                mediaBox.innerHTML = `<video src="${lesson.videoFileData}" controls class="w-full h-full object-contain bg-black"></video>`;
+            } else if (lesson.videoUrl) {
+                const embedUrl = convertToYoutubeEmbed(lesson.videoUrl);
+                mediaBox.innerHTML = `<iframe src="${embedUrl}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>`;
+            } else {
+                mediaBox.innerHTML = `
+                    <div class="p-5 flex flex-col justify-between h-full">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">LESSON 0${activeLessonIndex + 1} OF 0${activePlayerCourse.lessons.length}</span>
+                        </div>
+                        <div class="my-auto text-center space-y-3 max-w-lg mx-auto">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto">
+                                <i data-lucide="play" class="w-7 h-7 fill-emerald-400"></i>
+                            </div>
+                            <h4 class="font-display text-lg sm:text-2xl font-bold text-white">${lesson.title}</h4>
+                            <p class="text-xs sm:text-sm text-slate-300">${lesson.summary || ''}</p>
+                        </div>
+                        <div class="text-center text-[11px] text-slate-500">Study Sritam's notes below or download attached PDF</div>
+                    </div>
+                `;
+            }
+
+            const isLessonDone = completedList.includes(activeLessonIndex);
+            const completeBtn = document.getElementById('complete-lesson-btn');
+            if (isLessonDone) {
+                completeBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i><span>Completed</span>`;
+                completeBtn.className = 'px-3.5 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-bold flex items-center gap-1.5';
+            } else {
+                completeBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i><span>Mark Completed</span>`;
+                completeBtn.className = 'px-3.5 py-1.5 rounded-lg bg-emerald-500 text-navy-950 text-xs font-bold hover:bg-emerald-400 transition flex items-center gap-1.5';
+            }
+
+            const progressPercent = Math.round((completedList.length / activePlayerCourse.lessons.length) * 100);
+            document.getElementById('player-progress-text').textContent = `${progressPercent}% Done`;
+            document.getElementById('player-progress-bar').style.width = `${progressPercent}%`;
+
+            const playlistEl = document.getElementById('player-lessons-list');
+            playlistEl.innerHTML = activePlayerCourse.lessons.map((item, idx) => {
+                const isActive = idx === activeLessonIndex;
+                const isDone = completedList.includes(idx);
+                return `
+                    <button onclick="selectLesson(${idx})" class="w-full text-left p-3 rounded-xl border transition flex items-start gap-3 ${isActive ? 'bg-emerald-500/15 border-emerald-500/50 text-white' : 'bg-navy-900/80 border-slate-800 text-slate-300 hover:border-slate-700'}">
+                        <span class="mt-0.5 shrink-0 ${isDone ? 'text-emerald-400' : 'text-slate-500'}">
+                            <i data-lucide="${isDone ? 'check-circle-2' : 'play-circle'}" class="w-4 h-4"></i>
+                        </span>
+                        <div class="overflow-hidden flex-1">
+                            <div class="text-xs font-semibold truncate">${item.title}</div>
+                            <div class="flex items-center gap-2 text-[11px] font-mono text-slate-400 mt-0.5">
+                                <span>${item.duration}</span>
+                                ${item.pdfData ? '<span class="text-amber-400 font-bold">• PDF</span>' : ''}
+                                ${(item.videoUrl || item.videoFileData) ? '<span class="text-emerald-400 font-bold">• Video</span>' : ''}
+                            </div>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function convertToYoutubeEmbed(url) {
+            if (url.includes('youtube.com/watch?v=')) {
+                return url.replace('watch?v=', 'embed/').split('&')[0];
+            } else if (url.includes('youtu.be/')) {
+                const id = url.split('youtu.be/')[1].split('?')[0];
+                return `https://www.youtube.com/embed/${id}`;
+            }
+            return url;
+        }
+
+        function selectLesson(index) {
+            activeLessonIndex = index;
+            renderPlayerLesson();
+        }
+
+        function markCurrentLessonComplete() {
+            if (!activePlayerCourse) return;
+            if (!completedLessonsMap[activePlayerCourse.id]) {
+                completedLessonsMap[activePlayerCourse.id] = [];
+            }
+            if (!completedLessonsMap[activePlayerCourse.id].includes(activeLessonIndex)) {
+                completedLessonsMap[activePlayerCourse.id].push(activeLessonIndex);
+                localStorage.setItem('tws_completed_lessons', JSON.stringify(completedLessonsMap));
+                showToast('Lesson marked as completed!', 'success');
+            }
+            if (activeLessonIndex < activePlayerCourse.lessons.length - 1) {
+                activeLessonIndex++;
+            }
+            renderPlayerLesson();
+        }
+
+        function downloadLessonNotes() {
+            if (!activePlayerCourse) return;
+            const lesson = activePlayerCourse.lessons[activeLessonIndex];
+            const textContent = `TRADE WITH SRITAM - STUDY NOTES\nCourse: ${activePlayerCourse.title}\nLesson: ${lesson.title}\n----------------------------------------\n\n${(lesson.notes || []).join('\n\n')}\n\n© Trade With Sritam`;
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${lesson.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_notes.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Study notes downloaded!', 'success');
+        }
+
+        function closePlayerModal() {
+            const modal = document.getElementById('player-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('player-media-container').innerHTML = '';
+            activePlayerCourse = null;
+        }
+
+        // ---------------------------------------------------------
+        // 10. SECRET OWNER LOGIN & FULL EDITING DASHBOARD
+        // ---------------------------------------------------------
+        function triggerOwnerAccess() {
+            if (isOwnerLoggedIn) {
+                openOwnerDashboard();
+            } else {
+                const modal = document.getElementById('owner-login-modal');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                lucide.createIcons();
+            }
+        }
+
+        function closeOwnerLoginModal() {
+            const modal = document.getElementById('owner-login-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function handleOwnerLogin(e) {
+            e.preventDefault();
+            const uid = document.getElementById('owner-userid-input').value.trim();
+            const pwd = document.getElementById('owner-password-input').value.trim();
+
+            if (uid === OWNER_USER_ID && pwd === OWNER_PASSWORD) {
+                isOwnerLoggedIn = true;
+                sessionStorage.setItem('tws_owner_auth', 'true');
+                closeOwnerLoginModal();
+                updateOwnerStatusUI();
+                openOwnerDashboard();
+                showToast('Welcome Sritam! Full Editor Studio unlocked.', 'success');
+            } else {
+                showToast('Invalid User ID or Password!', 'error');
+            }
+        }
+
+        function logoutOwner() {
+            isOwnerLoggedIn = false;
+            sessionStorage.removeItem('tws_owner_auth');
+            closeOwnerDashboard();
+            updateOwnerStatusUI();
+            showToast('Logged out from Owner Studio.', 'success');
+        }
+
+        function updateOwnerStatusUI() {
+            const pill = document.getElementById('active-owner-pill');
+            if (isOwnerLoggedIn) {
+                pill.classList.remove('hidden');
+                pill.classList.add('inline-flex');
+            } else {
+                pill.classList.add('hidden');
+                pill.classList.remove('inline-flex');
+            }
+        }
+
+        function populateHeroEditorForm() {
+            document.getElementById('edit-stat1-val').value = heroData.stat1Val;
+            document.getElementById('edit-stat1-label').value = heroData.stat1Label;
+            document.getElementById('edit-stat2-val').value = heroData.stat2Val;
+            document.getElementById('edit-stat2-label').value = heroData.stat2Label;
+            document.getElementById('edit-stat3-val').value = heroData.stat3Val;
+            document.getElementById('edit-stat3-label').value = heroData.stat3Label;
+            document.getElementById('edit-hero-badge').value = heroData.badge;
+            document.getElementById('edit-hero-bio').value = heroData.bio;
+            document.getElementById('edit-chart-ticker').value = heroData.chartTicker;
+            document.getElementById('edit-chart-badge').value = heroData.chartBadge;
+            document.getElementById('edit-chart-mentor').value = heroData.chartMentor;
+            document.getElementById('edit-chart-lang').value = heroData.chartLang;
+            document.getElementById('edit-chart-access').value = heroData.chartAccess;
+        }
+
+        async function saveHeroContent(e) {
+            e.preventDefault();
+            heroData.stat1Val = document.getElementById('edit-stat1-val').value.trim();
+            heroData.stat1Label = document.getElementById('edit-stat1-label').value.trim();
+            heroData.stat2Val = document.getElementById('edit-stat2-val').value.trim();
+            heroData.stat2Label = document.getElementById('edit-stat2-label').value.trim();
+            heroData.stat3Val = document.getElementById('edit-stat3-val').value.trim();
+            heroData.stat3Label = document.getElementById('edit-stat3-label').value.trim();
+            heroData.badge = document.getElementById('edit-hero-badge').value.trim();
+            heroData.bio = document.getElementById('edit-hero-bio').value.trim();
+            heroData.chartTicker = document.getElementById('edit-chart-ticker').value.trim();
+            heroData.chartBadge = document.getElementById('edit-chart-badge').value.trim();
+            heroData.chartMentor = document.getElementById('edit-chart-mentor').value.trim();
+            heroData.chartLang = document.getElementById('edit-chart-lang').value.trim();
+            heroData.chartAccess = document.getElementById('edit-chart-access').value.trim();
+
+            await saveAllState();
+            renderHeroSection();
+            showToast('Front page stats & hero details updated!', 'success');
+        }
+
+        async function resetHeroDefaults() {
+            if (!confirm('Kya aap front page stats aur text ko default par reset karna chahte hain?')) return;
+            heroData = { ...DEFAULT_HERO_DATA };
+            await saveAllState();
+            populateHeroEditorForm();
+            renderHeroSection();
+            showToast('Front page reset to default.', 'success');
+        }
+
+        function openOwnerDashboard() {
+            if (!isOwnerLoggedIn) return triggerOwnerAccess();
+            populateHeroEditorForm();
+            renderOwnerCoursesList();
+            populateTargetCourseSelect();
+            renderOwnerPerfList();
+            document.getElementById('setting-upi-input').value = appSettings.upiId;
+            document.getElementById('setting-name-input').value = appSettings.payeeName;
+            document.getElementById('setting-whatsapp-input').value = appSettings.whatsapp;
+
+            const modal = document.getElementById('owner-dashboard-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeOwnerDashboard() {
+            const modal = document.getElementById('owner-dashboard-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function switchOwnerTab(tabName) {
+            ['frontpage', 'courses', 'lessons', 'performance', 'settings'].forEach(t => {
+                document.getElementById(`owner-tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${t}`);
+                btn.classList.remove('border-amber-400', 'text-amber-400');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+            document.getElementById(`owner-tab-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            activeBtn.classList.add('border-amber-400', 'text-amber-400');
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+        }
+
+        // Tab 2: Add / Edit / Delete Courses
+        function togglePriceFields() {
+            const type = document.getElementById('new-course-type').value;
+            const p1 = document.getElementById('new-course-price-wrap');
+            const p2 = document.getElementById('new-course-origprice-wrap');
+            if (type === 'paid') {
+                p1.classList.remove('hidden');
+                p2.classList.remove('hidden');
+            } else {
+                p1.classList.add('hidden');
+                p2.classList.add('hidden');
+            }
+        }
+
+        async function handleAddCourse(e) {
+            e.preventDefault();
+            const type = document.getElementById('new-course-type').value;
+            const title = document.getElementById('new-course-title').value.trim();
+            const subtitle = document.getElementById('new-course-subtitle').value.trim();
+            const price = Number(document.getElementById('new-course-price').value) || 1999;
+            const origPrice = Number(document.getElementById('new-course-origprice').value) || 4999;
+
+            const newCourse = {
+                id: `${type}-${Date.now()}`,
+                type,
+                title,
+                subtitle,
+                price: type === 'paid' ? price : 0,
+                originalPrice: type === 'paid' ? origPrice : 0,
+                badge: 'NEW',
+                level: 'All Levels',
+                icon: 'trending-up',
+                features: ['HD Video Modules', 'Downloadable PDF Notes', 'Lifetime Access'],
+                lessons: [
+                    {
+                        title: '1. Introduction & Setup',
+                        duration: '15 Mins',
+                        summary: subtitle,
+                        notes: ['• Welcome to ' + title]
+                    }
+                ]
+            };
+
+            coursesData.push(newCourse);
+            await saveAllState();
+            renderFreeCourses();
+            renderPaidCourses();
+            renderOwnerCoursesList();
+            populateTargetCourseSelect();
+            updateEnrolledBadge();
+            e.target.reset();
+            togglePriceFields();
+            lucide.createIcons();
+            showToast('New course created!', 'success');
+        }
+
+        function renderOwnerCoursesList() {
+            const container = document.getElementById('owner-courses-list');
+            container.innerHTML = coursesData.map(c => `
+                <div class="p-4 rounded-xl bg-navy-950 border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded ${c.type === 'free' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+                            ${c.type.toUpperCase()} ${c.type === 'paid' ? `• ₹${c.price}` : ''}
+                        </span>
+                        <div class="font-bold text-white text-sm mt-1">${c.title}</div>
+                        <div class="text-xs text-slate-400">${c.lessons.length} Lessons</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="quickEditCourse('${c.id}')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white">Edit</button>
+                        <button onclick="deleteCourse('${c.id}')" class="px-3 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-xs font-semibold text-rose-400">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function quickEditCourse(courseId) {
+            const c = coursesData.find(x => x.id === courseId);
+            if (!c) return;
+            const newTitle = prompt('Edit Course Title:', c.title);
+            if (newTitle && newTitle.trim()) c.title = newTitle.trim();
+            if (c.type === 'paid') {
+                const newPrice = prompt('Edit Course Price (₹):', c.price);
+                if (newPrice && !isNaN(newPrice)) c.price = Number(newPrice);
+            }
+            await saveAllState();
+            renderFreeCourses();
+            renderPaidCourses();
+            renderOwnerCoursesList();
+            lucide.createIcons();
+            showToast('Course updated!', 'success');
+        }
+
+        async function deleteCourse(courseId) {
+            if (!confirm('Kya aap is course ko delete karna chahte hain?')) return;
+            coursesData = coursesData.filter(c => c.id !== courseId);
+            await saveAllState();
+            renderFreeCourses();
+            renderPaidCourses();
+            renderOwnerCoursesList();
+            populateTargetCourseSelect();
+            updateEnrolledBadge();
+            lucide.createIcons();
+            showToast('Course deleted.', 'success');
+        }
+
+        // Tab 3: Upload Video & PDF Lessons
+        function populateTargetCourseSelect() {
+            const sel = document.getElementById('lesson-target-course');
+            sel.innerHTML = coursesData.map(c => `<option value="${c.id}">[${c.type.toUpperCase()}] ${c.title}</option>`).join('');
+            renderOwnerCourseLessons();
+        }
+
+        function renderOwnerCourseLessons() {
+            const courseId = document.getElementById('lesson-target-course').value;
+            const course = coursesData.find(c => c.id === courseId);
+            const listEl = document.getElementById('owner-selected-course-lessons');
+            if (!course) return;
+
+            listEl.innerHTML = course.lessons.map((l, idx) => `
+                <div class="p-3 rounded-xl bg-navy-950 border border-slate-800 flex items-center justify-between gap-2 text-xs">
+                    <div>
+                        <span class="font-bold text-white">${l.title}</span>
+                        <span class="text-slate-400 ml-2">(${l.duration})</span>
+                        ${l.pdfData ? '<span class="ml-2 text-amber-400 font-bold">[PDF Attached]</span>' : ''}
+                        ${(l.videoUrl || l.videoFileData) ? '<span class="ml-2 text-emerald-400 font-bold">[Video Attached]</span>' : ''}
+                    </div>
+                    <button onclick="deleteLessonFromCourse('${course.id}', ${idx})" class="text-rose-400 hover:underline font-semibold">Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleAddLesson(e) {
+            e.preventDefault();
+            const courseId = document.getElementById('lesson-target-course').value;
+            const course = coursesData.find(c => c.id === courseId);
+            if (!course) return;
+
+            const submitBtn = document.getElementById('upload-lesson-submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+
+            const title = document.getElementById('lesson-title-input').value.trim();
+            const duration = document.getElementById('lesson-duration-input').value.trim() || '20 Mins';
+            const videoUrl = document.getElementById('lesson-video-url').value.trim();
+            const notesRaw = document.getElementById('lesson-notes-input').value.trim();
+            const videoFile = document.getElementById('lesson-video-file').files[0];
+            const pdfFile = document.getElementById('lesson-pdf-file').files[0];
+
+            let videoFileData = '';
+            let pdfData = '';
+            let pdfName = '';
+
+            try {
+                if (videoFile) {
+                    if (videoFile.size > 40 * 1024 * 1024) {
+                        showToast('Video file 40MB se choti honi chahiye ya YouTube link use karein.', 'error');
+                        return;
+                    }
+                    videoFileData = await readFileAsDataURL(videoFile);
+                }
+                if (pdfFile) {
+                    if (pdfFile.size > 15 * 1024 * 1024) {
+                        showToast('PDF file 15MB se choti honi chahiye.', 'error');
+                        return;
+                    }
+                    pdfData = await readFileAsDataURL(pdfFile);
+                    pdfName = pdfFile.name;
+                }
+
+                course.lessons.push({
+                    title,
+                    duration,
+                    summary: notesRaw.split('\n')[0],
+                    videoUrl,
+                    videoFileData,
+                    pdfData,
+                    pdfName,
+                    notes: notesRaw.split('\n').map(line => line.startsWith('•') ? line : '• ' + line)
+                });
+
+                await saveAllState();
+                renderFreeCourses();
+                renderPaidCourses();
+                renderOwnerCourseLessons();
+                e.target.reset();
+                lucide.createIcons();
+                showToast('Video / PDF Lesson uploaded & saved!', 'success');
+            } catch (err) {
+                showToast('Upload error! Choti file try karein.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Upload & Save Lesson';
+            }
+        }
+
+        async function deleteLessonFromCourse(courseId, lessonIdx) {
+            const course = coursesData.find(c => c.id === courseId);
+            if (!course) return;
+            course.lessons.splice(lessonIdx, 1);
+            await saveAllState();
+            renderFreeCourses();
+            renderPaidCourses();
+            renderOwnerCourseLessons();
+            lucide.createIcons();
+            showToast('Lesson removed.', 'success');
+        }
+
+        // Tab 4: Upload Profit Screenshots
+        async function handleAddProfitScreenshot(e) {
+            e.preventDefault();
+            const index = document.getElementById('perf-index-input').value.trim();
+            const profit = document.getElementById('perf-profit-input').value.trim();
+            const tag = document.getElementById('perf-tag-input').value.trim() || 'Verified Trade';
+            const imgFile = document.getElementById('perf-image-file').files[0];
+
+            if (!imgFile) return;
+            try {
+                const imgData = await readFileAsDataURL(imgFile);
+                performanceData.unshift({
+                    id: `perf-${Date.now()}`,
+                    index,
+                    profit,
+                    tag,
+                    image: imgData
+                });
+                await saveAllState();
+                renderPerformanceSlider();
+                renderOwnerPerfList();
+                e.target.reset();
+                showToast('Profit screenshot added to front slider!', 'success');
+            } catch (err) {
+                showToast('Image upload failed.', 'error');
+            }
+        }
+
+        function renderOwnerPerfList() {
+            const container = document.getElementById('owner-perf-list');
+            container.innerHTML = performanceData.map(p => `
+                <div class="p-3 rounded-xl bg-navy-950 border border-slate-800 space-y-2">
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="text-white">${p.index}</span>
+                        <span class="text-emerald-400">${p.profit}</span>
+                    </div>
+                    ${p.image ? `<img src="${p.image}" class="w-full h-24 object-cover rounded-lg">` : `<div class="h-24 rounded-lg bg-slate-900 flex items-center justify-center text-xs text-slate-500">Default P&L Card</div>`}
+                    <button onclick="deletePerfItem('${p.id}')" class="w-full py-1.5 rounded-lg bg-rose-500/15 text-rose-400 text-xs font-bold hover:bg-rose-500/25">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        async function deletePerfItem(id) {
+            performanceData = performanceData.filter(p => p.id !== id);
+            await saveAllState();
+            renderPerformanceSlider();
+            renderOwnerPerfList();
+            showToast('Screenshot removed.', 'success');
+        }
+
+        // Tab 5: Settings
+        async function saveOwnerSettings(e) {
+            e.preventDefault();
+            appSettings.upiId = document.getElementById('setting-upi-input').value.trim();
+            appSettings.payeeName = document.getElementById('setting-name-input').value.trim();
+            appSettings.whatsapp = document.getElementById('setting-whatsapp-input').value.trim();
+            await saveAllState();
+            updateFooterWhatsapp();
+            showToast('Settings saved!', 'success');
+        }
+
+        // ---------------------------------------------------------
+        // 11. DRAWER & UTILITIES
+        // ---------------------------------------------------------
+        function updateEnrolledBadge() {
+            const freeCount = coursesData.filter(c => c.type === 'free').length;
+            const totalEnrolled = freeCount + unlockedCourseIds.length;
+            document.getElementById('enrolled-count-badge').textContent = totalEnrolled;
+        }
+
+        function openMyCoursesDrawer() {
+            const listEl = document.getElementById('enrolled-courses-list');
+            const myCourses = coursesData.filter(c => c.type === 'free' || unlockedCourseIds.includes(c.id));
+
+            listEl.innerHTML = myCourses.map(c => `
+                <div class="p-4 rounded-xl bg-navy-950 border border-slate-800 flex items-center justify-between gap-3">
+                    <div>
+                        <span class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded ${c.type === 'free' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-amber-500/15 text-amber-400'}">
+                            ${c.type === 'free' ? 'FREE' : 'PRO UNLOCKED'}
+                        </span>
+                        <h4 class="font-bold text-sm text-white mt-1.5">${c.title}</h4>
+                        <p class="text-xs text-slate-400">${c.lessons.length} Modules</p>
+                    </div>
+                    <button onclick="closeMyCoursesDrawer(); openCoursePlayer('${c.id}')" class="px-3.5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-bold text-xs shrink-0 transition">
+                        Open
+                    </button>
+                </div>
+            `).join('');
+
+            const drawer = document.getElementById('my-courses-drawer');
+            drawer.classList.remove('hidden');
+            drawer.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeMyCoursesDrawer() {
+            const drawer = document.getElementById('my-courses-drawer');
+            drawer.classList.add('hidden');
+            drawer.classList.remove('flex');
+        }
+
+        function updateFooterWhatsapp() {
+            const link = document.getElementById('footer-whatsapp-link');
+            if (link) {
+                link.href = `https://wa.me/${appSettings.whatsapp}?text=${encodeURIComponent('Hi Sritam, I need help regarding Trade With Sritam courses.')}`;
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function copyShareLink() {
+            const tempInput = document.createElement('input');
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast('Website link copied! Share with your students.', 'success');
+            } catch (err) {
+                showToast('Unable to copy automatically.', 'error');
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success'
+                ? 'bg-navy-900 border-emerald-500/60 text-emerald-300'
+                : 'bg-navy-900 border-rose-500/60 text-rose-300';
+
+            toast.className = `pointer-events-auto border ${bgClass} px-4 py-3 rounded-xl shadow-2xl text-xs sm:text-sm font-medium flex items-center gap-2.5 transition-all duration-300`;
+            toast.innerHTML = `
+                <i data-lucide="${type === 'success' ? 'check-circle-2' : 'alert-circle'}" class="w-4 h-4 shrink-0"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
